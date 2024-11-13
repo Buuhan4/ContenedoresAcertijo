@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contenedores Acertijo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 34px;
+            margin-bottom: 20px;
+        }
+
+        #zona-animales {
+            background-color: #889aa9;
+        }
+
+        #zona-frutas {
+            background-color: #dc3740;
+        }
+
+        #zona-colores {
+            background-color: rgb(232, 232, 61);
+        }
+
+        .contenedor-zonas {
+            display: flex;
+            justify-content: space-evenly;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            gap: 35px;
+            padding: 15px;
+        }
+
+        .zona {
+            border: 2px solid #aaa;
+            border-radius: 10px;
+            width: 30%;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 23px;
+            padding: 23px;
+            min-height: 250px;
+        }
+
+        .zona.activa {
+            border-color: #00aaff;
+        }
+
+        .botones-arrastrables {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            max-width: 100%;
+        }
+
+        .boton {
+            padding: 10px;
+            background-color: #46eb9e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: move;
+            transition: background-color 0.3s ease;
+        }
+
+        .boton:hover {
+            background-color: #005fb3;
+        }
+
+        .boton.incorrecto {
+            background-color: #ff4c4c;
+        }
+
+        #boton-verificar {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #boton-verificar:hover {
+            background-color: #1e7e34;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Clasifica los elementos arrastrándolos</h2>
+
+    <div class="contenedor-zonas">
+        <div class="zona" id="zona-animales">Animales</div>
+        <div class="zona" id="zona-colores">Colores</div>
+        <div class="zona" id="zona-frutas">Frutas</div>
+    </div>
+
+    <div class="botones-arrastrables">
+        <button class="boton" draggable="true" id="manzana">Manzana</button>
+        <button class="boton" draggable="true" id="platano">Plátano</button>
+        <button class="boton" draggable="true" id="rojo">Rojo</button>
+        <button class="boton" draggable="true" id="amarillo">Amarillo</button>
+        <button class="boton" draggable="true" id="perro">Perro</button>
+        <button class="boton" draggable="true" id="gato">Gato</button>
+    </div>
+
+    <button id="boton-verificar">Verificar</button>
+
+    <p id="resultado"></p>
+
+    <script>
+        let botones = document.querySelectorAll('.boton');
+        let zonas = document.querySelectorAll('.zona');
+
+        for (let i = 0; i < botones.length; i++) {
+            botones[i].addEventListener('dragstart', function (evento) {
+                evento.dataTransfer.setData('text', this.id);
+            });
+        }
+
+        for (let i = 0; i < zonas.length; i++) {
+            zonas[i].addEventListener('dragover', function (evento) {
+                evento.preventDefault();
+                this.classList.add('activa');
+            });
+
+            zonas[i].addEventListener('dragleave', function () {
+                this.classList.remove('activa');
+            });
+
+            zonas[i].addEventListener('drop', function (evento) {
+                evento.preventDefault();
+                this.classList.remove('activa');
+                let idElemento = evento.dataTransfer.getData('text');
+                let boton = document.getElementById(idElemento);
+                if (boton) {
+                    this.appendChild(boton);
+                }
+            });
+        }
+
+        document.getElementById('boton-verificar').addEventListener('click', function () {
+            const animalesCorrectos = ['perro', 'gato'];
+            const coloresCorrectos = ['rojo', 'amarillo'];
+            const frutasCorrectas = ['manzana', 'platano'];
+
+            let todoCorrecto = true;
+
+
+            for (let i = 0; i < botones.length; i++) {
+                botones[i].classList.remove('incorrecto');
+            }
+
+            let zonaAnimales = document.getElementById('zona-animales').children;
+            for (let i = 0; i < zonaAnimales.length; i++) {
+                if (!animalesCorrectos.includes(zonaAnimales[i].id)) {
+                    zonaAnimales[i].classList.add('incorrecto');
+                    todoCorrecto = false;
+                }
+            }
+
+
+            let zonaColores = document.getElementById('zona-colores').children;
+            for (let i = 0; i < zonaColores.length; i++) {
+                if (!coloresCorrectos.includes(zonaColores[i].id)) {
+                    zonaColores[i].classList.add('incorrecto');
+                    todoCorrecto = false;
+                }
+            }
+
+
+            let zonaFrutas = document.getElementById('zona-frutas').children;
+            let frutaIds = [];
+            for (let i = 0; i < zonaFrutas.length; i++) {
+                frutaIds.push(zonaFrutas[i].id);
+            }
+
+
+            if (frutaIds.length !== 2 || !frutaIds.every(id => frutasCorrectas.includes(id))) {
+                for (let i = 0; i < zonaFrutas.length; i++) {
+                    zonaFrutas[i].classList.add('incorrecto');
+                }
+                todoCorrecto = false;
+            }
+
+            const mensaje = todoCorrecto ? "¡Ganaste!" : "Incorrecto.";
+            document.getElementById('resultado').textContent = mensaje;
+        });
+    </script>
+</body>
+
+</html>
