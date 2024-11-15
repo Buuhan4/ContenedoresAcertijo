@@ -24,7 +24,7 @@
         }
 
         #zona-frutas {
-            background-color: #dc3740;
+            background-color: #109fb9;
         }
 
         #zona-colores {
@@ -45,15 +45,13 @@
             border: 2px solid #aaa;
             border-radius: 10px;
             width: 30%;
-            padding: 15px;
+            padding: 23px;
             text-align: center;
             font-size: 18px;
             background-color: #f0f0f0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             gap: 23px;
-            padding: 23px;
             min-height: 250px;
         }
 
@@ -67,12 +65,11 @@
             gap: 10px;
             margin-top: 20px;
             flex-wrap: wrap;
-            max-width: 100%;
         }
 
         .boton {
             padding: 10px;
-            background-color: #46eb9e;
+            background-color: #005fb3;
             color: white;
             border: none;
             border-radius: 5px;
@@ -81,7 +78,11 @@
         }
 
         .boton:hover {
-            background-color: #005fb3;
+            background-color: #003f73;
+        }
+
+        .boton.correcto {
+            background-color: #28a745;
         }
 
         .boton.incorrecto {
@@ -171,51 +172,41 @@
             const animalesCorrectos = ['perro', 'gato'];
             const coloresCorrectos = ['rojo', 'amarillo'];
             const frutasCorrectas = ['manzana', 'platano'];
-
             let solucion = true;
 
             for (let boton of botones) {
-                boton.classList.remove('incorrecto');
+                boton.classList.remove('incorrecto', 'correcto');
             }
-
 
             let divAnimales = document.getElementById('zona-animales').children;
-            if (divAnimales.length !== animalesCorrectos.length){
-                solucion = false;
-            }
             for (let item of divAnimales) {
-                if (!animalesCorrectos.includes(item.id)) {
+                if (animalesCorrectos.includes(item.id)) {
+                    item.classList.add('correcto');
+                } else {
                     item.classList.add('incorrecto');
                     solucion = false;
                 }
             }
-
 
             let divColores = document.getElementById('zona-colores').children;
-            if (divColores.length !== coloresCorrectos.length) {
-                solucion = false;
-            }
             for (let item of divColores) {
-                if (!coloresCorrectos.includes(item.id)) {
+                if (coloresCorrectos.includes(item.id)) {
+                    item.classList.add('correcto');
+                } else {
                     item.classList.add('incorrecto');
                     solucion = false;
                 }
             }
-
-
 
             let divFrutas = document.getElementById('zona-frutas').children;
-            if (divFrutas.length !== frutasCorrectas.length) {
-                solucion = false;
-            }
             for (let item of divFrutas) {
-                if (!frutasCorrectas.includes(item.id)) {
+                if (frutasCorrectas.includes(item.id)) {
+                    item.classList.add('correcto');
+                } else {
                     item.classList.add('incorrecto');
                     solucion = false;
                 }
             }
-
-
 
             let elementosSinZona = Array.from(botones).filter(boton => !boton.parentElement.classList.contains('zona'));
             if (elementosSinZona.length > 0) {
